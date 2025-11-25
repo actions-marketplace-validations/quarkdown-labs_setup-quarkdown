@@ -1,0 +1,28 @@
+name: 'Setup Quarkdown'
+description: 'Set up Quarkdown CLI for GitHub Actions'
+author: 'Quarkdown'
+
+branding:
+  icon: 'file-text'
+  color: 'green'
+
+inputs:
+  quarkdown-version:
+    description: 'The version of Quarkdown to install (e.g., "1.0.0"). If not specified, installs the latest version.'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Quarkdown
+      shell: bash
+      run: |
+        INSTALL_ARGS=""
+        if [ -n "${{ inputs.quarkdown-version }}" ]; then
+          INSTALL_ARGS="--tag v${{ inputs.quarkdown-version }}"
+        fi
+        curl -fsSL https://raw.githubusercontent.com/quarkdown-labs/get-quarkdown/refs/heads/main/install.sh | sudo env "PATH=$PATH" bash -s -- $INSTALL_ARGS
+
+    - name: Verify installation
+      shell: bash
+      run: quarkdown --version
