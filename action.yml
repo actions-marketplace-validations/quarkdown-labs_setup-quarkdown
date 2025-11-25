@@ -17,11 +17,15 @@ runs:
     - name: Install Quarkdown
       shell: bash
       run: |
-        INSTALL_ARGS=""
+        INSTALL_DIR="$RUNNER_TOOL_CACHE/quarkdown"
+        INSTALL_ARGS="--prefix $INSTALL_DIR"
+        
         if [ -n "${{ inputs.quarkdown-version }}" ]; then
-          INSTALL_ARGS="--tag v${{ inputs.quarkdown-version }}"
+          INSTALL_ARGS="$INSTALL_ARGS --tag v${{ inputs.quarkdown-version }}"
         fi
-        curl -fsSL https://raw.githubusercontent.com/quarkdown-labs/get-quarkdown/refs/heads/main/install.sh | sudo env "PATH=$PATH" bash -s -- $INSTALL_ARGS
+        
+        curl -fsSL https://raw.githubusercontent.com/quarkdown-labs/get-quarkdown/refs/heads/main/install.sh | bash -s -- $INSTALL_ARGS
+        echo "$INSTALL_DIR/bin" >> $GITHUB_PATH
 
     - name: Verify installation
       shell: bash
